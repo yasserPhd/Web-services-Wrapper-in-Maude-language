@@ -1,0 +1,253 @@
+ fmod LISTINTER is
+  sorts MessageId  listMid  DirectionIN DirectionOUT Direction MessageIN MessageOUT Message OperationID Operation Interface listInter .
+subsorts MessageId < listMid .
+subsorts Interface < listInter .
+protecting TRUTH-VALUE   . 
+protecting INT .
+
+op SM : -> MessageId [ctor] .
+op sm : -> MessageId [ctor] .
+ op TM : -> MessageId [ctor] .
+ op _ : -> MessageId [ctor] .
+ op IN : -> DirectionIN [ctor] .
+ op OUT : -> DirectionOUT [ctor] .
+ op SO : -> OperationID [ctor] .
+ op TO : -> OperationID [ctor] .
+ op _(_) : MessageId Int -> MessageId .
+ op _(_)(_) : MessageId Int Int -> MessageId .
+ op _(_)(_)(_) : MessageId Int Int Int -> MessageId .
+ op _ _ _ _ : MessageId Int Int Int -> MessageId .
+ op _ _ _  : MessageId Int Int -> MessageId .
+ op _ _ : MessageId Int -> MessageId .
+ op _::_ : listMid listMid -> listMid [ ctor assoc  ] .
+ op _@_ : MessageId Int -> MessageId .
+ op getLastInter : listInter -> Interface .
+ op setlastInter : Interface listInter -> listInter .
+ op sameinstance : listMid listMid -> Bool .
+ op getTail : listMid -> listMid .
+ ***op getinstances: listMid listMid -> listMid .
+ op instancesExist : listMid -> Bool .
+ 
+ op nil : -> listMid [ctor] .
+
+ op _:_ :  listMid listMid -> listMid [ ctor assoc  ] .
+
+op msgIN : listMid DirectionIN -> MessageIN [ctor ] .
+ op msgOUT : listMid DirectionOUT -> MessageOUT [ctor ] .
+ op msge : MessageIN MessageOUT -> Message [ctor ] .
+ op Op : OperationID Message -> Operation [ctor ] .
+ op inter : Operation -> Interface .
+ op Inter : Interface -> Interface .
+ op listinter : listInter -> listInter .
+ op nil : -> listInter [ctor] .
+ ***op  _++_ : Interface listInter -> listInter [ ctor ]   .
+op _++_ : listInter listInter -> listInter [ ctor assoc  ]   .
+ op process : Int -> listInter .
+ op getMsgIN : Interface -> MessageIN .
+  op elmAt : Int listInter -> Interface .
+  op elmAt : Int listMid -> MessageId .
+  op elmFromInstance : MessageId listMid -> Bool .
+  op getfirstMsg : listMid -> MessageId .
+  op getAllInstances : MessageId listMid -> listMid .
+  
+***  op comp : Interface Interface -> listInter .
+op fromSameInstance : MessageId MessageId -> Bool .
+
+  op sus : listMid listMid -> Int .
+
+
+  op getType : listMid -> MessageId .
+
+
+
+  op verifyType : listMid listMid -> Bool .
+  op verifyType2 : listMid listMid -> Bool .
+  op subType : MessageId MessageId -> Bool .
+  op subType : listMid listMid -> Bool .
+  op getAllInstance : MessageId listMid -> listMid .
+  op getRest : listMid listMid -> listMid .
+
+
+ op setLMOUT : listMid Interface -> Interface .
+
+
+ op getLMOUT  : Interface -> listMid .
+
+
+
+ op getLMIN  : Interface -> listMid .
+
+
+ op getOId : Interface -> OperationID .
+
+
+  op lenght : listMid -> Int .
+
+  op lenght : listInter -> Int .
+ op  getMsgId : MessageId -> MessageId .
+ op isInstance : MessageId -> Bool .
+ op getInstanceNbr : MessageId -> Int .
+ op doesexist : listMid listMid -> Bool .
+ 
+ 
+ ***op getInstanceId : MessageId -> MessageId . 
+
+   
+ vars I I2 : Interface .
+ vars LMI LMI2 LMI3 LMI4 : listMid .
+ vars MI  MI2 MI3 MI4 : MessageId .
+  vars MD MD3 : DirectionIN .
+  var MD2 MD4 : DirectionOUT .
+ vars OI OI2 : OperationID .
+ var min : MessageIN .
+ var mout : MessageOUT .
+ var N K : Int . 
+ var LI LI2 : listInter .
+ var M M2 : Message .
+ 
+ eq getMsgId((MI @ N)) = MI .
+ eq getfirstMsg(MI : LMI) = MI .
+ eq getfirstMsg(MI :: LMI) = MI .
+ eq getfirstMsg(MI) = MI .
+ eq getTail(MI : LMI) = LMI .
+ eq getTail(MI : LMI) = LMI .
+ 
+ ceq getRest(MI : LMI, MI2 : LMI2) = getRest(LMI,LMI2) if MI == MI2 . 
+ eq getRest(MI, MI2 : LMI2) = if MI == MI2 then LMI2 else MI2 : LMI2 fi .
+ ceq getRest(MI, MI2) = _ if MI == MI2 .
+ eq isInstance(MI @ N) = true .
+ eq isInstance(MI) = false [owise] .
+ eq getInstanceNbr(MI @ N) = N .
+ 
+ eq instancesExist((MI @ N) : LMI) = true  .
+ ceq instancesExist(MI : LMI) = instancesExist(LMI) if isInstance(MI) == false .
+ ceq instancesExist(MI) = true if isInstance(MI) == true .
+ eq instancesExist(LMI) = false [owise] .
+  
+ 
+ ceq fromSameInstance(MI @ N, MI2 @ K) = true if (MI == MI2) .
+ eq fromSameInstance(MI, MI2) = false [owise] .
+ 
+*** ceq getAllInstance(MI @ N, MI2 : LMI) =    MI2 : getAllInstance(MI @ N, LMI) if elmFromInstance(MI2,MI @ N) and elmFromInstance(MI,getfirstMsg(LMI))    .
+  
+ ***ceq getAllInstance(MI @ N, MI2 : LMI) =  MI2 if elmFromInstance(MI,getfirstMsg(LMI)) == false .
+ ***ceq  getAllInstance(MI @ N, MI2 : LMI) = getAllInstance(MI @ N, LMI)  if elmFromInstance(MI2,MI @ N) == false   .
+ ceq getAllInstances(MI @ N, MI2 : LMI) =   MI2 : getAllInstances(MI @ N, LMI) if isInstance(MI2) == true and isInstance(getfirstMsg(LMI)) == true and lenght(LMI) > 1 .
+ ceq  getAllInstances(MI @ N, MI2 : LMI) = MI2 if isInstance(MI2) == true and isInstance(getfirstMsg(LMI)) == false and lenght(LMI) > 1  .
+ ceq  getAllInstances(MI @ N, MI2 : MI3) = MI2 : MI3 if (isInstance(MI2) == true and getInstanceNbr(MI2) >= N ) /\ (isInstance(MI3) == true and getInstanceNbr(MI3) > getInstanceNbr(MI2)) .
+  ceq  getAllInstances(MI @ N, MI2 : MI3) = MI2  if (isInstance(MI2) == true and getInstanceNbr(MI2) >= N ) /\ (isInstance(MI3) == false) .
+   ceq getAllInstances(MI, MI2 : LMI) = MI if (isInstance(MI2) == false) and (MI == MI2) . 
+ ***ceq getAllInstance(MI @ N, MI2) = MI if elmFromInstance(MI @ N, MI2) .
+ ***ceq getAllInstance(MI @ N, MI2 : MI3) = MI2  if elmFromInstance(MI2,MI @ N) and elmFromInstance(MI3,MI @ N) == false .
+
+ eq getLastInter(LI ++ I) = I .
+ eq getLastInter(I) = I .
+ eq setlastInter(I,LI ++ I2) = LI ++ I .
+ eq setlastInter(I,I2) = I .
+ 
+ eq doesexist(MI,MI2 : LMI) = if MI == MI2 then true else doesexist(MI,LMI) fi .
+   eq doesexist(MI,MI2) =  if MI == MI2 then true else false fi .
+
+*** ceq getAllInstances(MI @ N, MI2 : LMI) = MI2 : getAllInstances(MI @ N, LMI) if fromSameInstance(MI @ N, MI2) and lenght(LMI) > 1 .
+
+***ceq getAllInstances(MI, MI2 : LMI2) = MI2 if fromSameInstance(MI, MI2) and fromSameInstance(MI, getfirstMsg(LMI2)) == false .
+ ***ceq getAllInstances(MI @ N, (MI2 @ K) : MI3) = (MI2 @ K) : MI3 if fromSameInstance(MI @ N,(MI2 @ K)) and fromSameInstance(MI @ N,MI3) .
+ ***ceq getAllInstances(MI @ N, (MI2 @ K) : MI3) = MI2 @ K if fromSameInstance(MI @ N,(MI2 @ K)) and (elmFromInstance(MI @ N,MI3) == false)  .
+***    ceq getAllInstances(MI @ N, (MI2 @ K) : LMI) =  (MI2 @ K) : getfirstMsg(LMI)  if fromSameInstance(MI @ N,getfirstMsg(LMI)) .
+***    ceq getAllInstances(MI @ N, (MI2 @ K) : LMI) =  (MI2 @ K) if fromSameInstance(MI @ N,getfirstMsg(LMI)) == false .
+***ceq getAllInstances(MI, MI2 : MI3) = MI2 : MI3 if fromSameInstance(MI, MI2) and fromSameInstance(MI, MI3) .
+***ceq getAllInstances(MI, MI2 : MI3) = MI2 if fromSameInstance(MI, MI2) and fromSameInstance(MI, MI2) == false .
+*** ceq getAllInstances(MI, MI2 : LMI) = MI if (MI == getfirstMsg(LMI)) and (MI == MI2) . 
+***ceq getAllInstances(MI, MI2 : LMI) = MI if elmFromInstance(MI,MI2) == false .
+ 
+ceq elmFromInstance((MI @ N), MI2 : LMI) = true and elmFromInstance((MI @ N), LMI)  if getMsgId(MI2) == MI . 
+ceq elmFromInstance((MI @ N), MI2) = true if getMsgId(MI2) == MI . 
+***eq elmFromInstance((MI @ N), MI2) = false [owise] .
+eq elmFromInstance(MI, MI2) = false [owise] .
+ 
+*** ceq sameinstance((MI @ N) :: LMI, MI2 : LMI2) = true and sameinstance(LMI,LMI2) if MI == MI2 .
+*** ceq sameinstance(MI : LMI, (MI2 @ N) :: LMI2) = true and sameinstance(LMI,LMI2) if LMI == LMI2 .
+*** ceq sameinstance(MI @ N, MI2) = true if MI == MI2 .
+ 
+ ceq sameinstance((MI @ N) :: LMI,MI2) = true and sameinstance(LMI,MI2) if MI == SM and MI2 == TM    .
+    ceq sameinstance(MI @ N,MI2) = true if MI == SM and MI2 == TM .
+    ceq sameinstance( MI,(MI2 @ N) :: LMI2) = true  and sameinstance(MI,LMI2) if MI == SM and MI2 == TM  .
+    ceq sameinstance( MI,MI2 @ N) = true if MI == SM and MI2 == TM .
+    eq sameinstance(LMI,LMI2) = false [owise] .
+    
+ 
+ 
+ ***ceq sameinstance((MI(N)) : LMI, MI2) = true and sameinstance(LMI,MI2) if MI == MI2  .
+ ***ceq sameinstance(MI ,MI2) = true if MI == MI2 .
+ ***ceq sameinstance((MI(N)), MI2) = true if MI == MI2 .
+ ***ceq sameinstance(MI, (MI2(N))) = true if MI == MI2 . 
+ ***  ceq sameinstance((MI(N)) : LMI,MI2) = true and sameinstance(LMI,MI2) if (MI == MI2)    .
+ ***   ceq sameinstance(MI(N),MI2) = true if MI == MI2 .
+***    ceq sameinstance( MI,(MI2(N)) : LMI2) = true  and sameinstance(MI,LMI2) if MI == MI2  .
+***    ceq sameinstance( MI,MI2(N)) = true if MI == MI2 .
+ ***   eq sameinstance(LMI,LMI2) = false [owise] . 
+ ***ceq sameinstance(
+	
+eq getLMIN (inter( Op(OI,msge(msgIN(LMI,MD),msgOUT(LMI2,MD2))) )) =  LMI . 
+
+***inter(Op(SO,msge(msgIN(ST : ST : nil,IN),msgOUT(TT : TT : nil,OUT))))
+
+ eq getLMOUT (inter( Op(OI,msge(msgIN(LMI,MD),msgOUT(LMI2,MD2))) )) =  LMI2  .
+	
+eq setLMOUT (LMI3,inter( Op(OI,msge(msgIN(LMI,MD),msgOUT(LMI2,MD2))))) = inter( Op(OI,msge(msgIN(LMI,MD),msgOUT(LMI3,MD2)))) .
+
+eq getOId(inter( Op(OI,msge(msgIN(LMI,MD),msgOUT(LMI2,MD2))) )) = OI .	
+
+***ceq lenght((MI : LMI)) = 1 if LMI == nil .
+eq lenght(MI) = 1 .
+eq lenght(MI : LMI) = 1 + lenght(LMI) . ***if LMI =/= nil .
+
+ceq lenght((I ++ LI2)) = 1 if LI2 == nil .
+ ceq lenght(I ++ LI2) = 1 + lenght(LI2) if LI2 =/= nil .
+ 
+ eq sus(LMI,LMI2) = lenght(LMI) - lenght(LMI2) .
+ eq getType(MI : LMI)= MI .
+ 
+ eq verifyType(MI : nil,MI2 : LMI2 ) =  if (MI == SM and MI2 == TM ) then true else false fi .
+
+   eq verifyType(MI : LMI,MI2 : nil) =  if (MI == SM and MI2 == TM ) then true else false fi .
+
+
+   ceq verifyType(MI : LMI,MI2 : LMI2) = true and verifyType( LMI,LMI2)  if MI == SM /\ MI2 == TM .
+
+   ceq verifyType(MI : LMI,MI2 : LMI2) = false   if MI =/= SM /\ MI2 == TM .
+   eq verifyType(MI : LMI, MI2) = if (MI == SM) and (MI2 == TM) then true else false fi . 
+   ceq verifyType(MI : LMI, MI2 : LMI2) = verifyType(getMsgId(MI) : LMI, getMsgId(MI2) : LMI2) if (isInstance(MI) == true and isInstance(MI2) == true) /\ (getInstanceNbr(MI) == getInstanceNbr(MI2)) . 
+   ceq verifyType(MI, MI2) = true if MI == SM and MI2 == TM .
+   ceq verifyType(MI, MI2) = true if (isInstance(MI) == true and isInstance(MI2) == true) /\ (getInstanceNbr(MI) == getInstanceNbr(MI2)) .
+   ceq verifyType2(MI : LMI,MI2 : LMI2) = true and verifyType2( LMI,LMI2)  if MI == MI2 .
+   ceq verifyType2(MI : LMI,MI2 : LMI2) = false   if MI =/= MI2  .
+   eq verifyType2(MI : LMI, MI2) = if MI == MI2  then true else false fi .
+   
+   eq  subType(MI,MI2) = if (MI == SM and MI2 == TM)   or (MI == sm and MI2 == TM) then true else false fi . 
+   eq subType(MI : LMI,MI2 : nil) = if (MI == SM or MI == sm  ) and (MI2 == TM)  then true else false fi .
+   ceq  subType (MI : LMI,MI2 : LMI2) = subType(MI,MI2) and subType(LMI,LMI2) if (LMI =/= nil and LMI2 =/= nil)  .
+   
+
+   
+ 
+  ***eq LM = ST : nil .
+*** eq  LM  = (ST ; TT ; nil)  .
+ ***eq inter(I) = inter(msge(msgIN(ST ; ST ; nil,IN),msgOUT(TT ; TT ; nil,OUT))) . 
+ ***eq Inter(I) = inter(msge(msgIN(ST : ST : nil,IN),msgOUT(TT : TT : nil,OUT))) .
+ ***eq Inter(I) = inter(ST : ST : nil) .
+ ***eq Inter(I) = inter(Op(SO,msge(msgIN(SM : SM : nil,IN),msgOUT(TM : TM : nil,OUT)))) .
+ eq getMsgIN(inter(Op(OI,msge(min,mout)))) = min .
+ ***eq listinter(LI) = (inter(Op(SO,msge(msgIN(ST : ST : nil,IN),msgOUT(TT : TT : nil,OUT)))) ++ inter(Op(SO,msge(msgIN(ST : ST : nil,IN),msgOUT(TT : TT : nil,OUT)))) ++ nil) .
+  eq listinter(LI) = inter(Op(SO,msge(msgIN(TM,IN),msgOUT(  SM  : SM  : TM ,OUT)))) ++ inter(Op(TO ,msge(msgIN( TM : TM ,IN),msgOUT(SM : SM : TM ,OUT)))) ++ inter(Op(TO,msge(msgIN(TM : TM ,IN),msgOUT(  SM ,OUT))))  . 
+ ***eq process(2) = inter(Op(SO,msge(msgIN(TM : TM :  nil,IN),msgOUT(  TM  : SM : nil,OUT)))) ++ inter(Op(TO ,msge(msgIN( TM : TM : TM : TM : TM : nil,IN),msgOUT(SM : SM : SM : SM : nil,OUT)))) ++ inter(Op(TO,msge(msgIN(TM : nil,IN),msgOUT(  SM  : nil,OUT))))  . 
+ceq elmAt(N,I ++ LI )= I if N == 1 .
+ceq elmAt(N,I ++ LI) =  elmAt(N - 1,LI) if N > 1 .
+
+ceq elmAt(N,MI : LMI )= MI if N == 1  .
+ceq elmAt(N,MI : LMI) =  elmAt(N - 1,LMI) if N > 1  . 
+***eq elmAt(1,MI : LMI )= MI  .
+***eq elmAt(N,MI : LMI) =  elmAt(N - 1,LMI) . 
+  
+ endfm
+ 

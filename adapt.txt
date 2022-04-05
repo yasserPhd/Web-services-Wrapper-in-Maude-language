@@ -1,0 +1,10 @@
+op resolve-mismatch : listMid listMid -> listMid .
+ceq resolve-mismatch(MI : LMI, MI2 : LMI2) = merge(getAllInstances(MI,MI : LMI)) : resolve-mismatch (getRest(getAllInstances(MI,MI : LMI),MI : LMI), LMI2) if instancesExist(MI : LMI) and lenght(getAllInstances(MI , MI : LMI)) > 1 and lenght(getAllInstances(MI2 , MI2 : LMI2)) == 1 and check-compatibility(MI : LMI, MI2 : LMI2) == false  .
+eq resolve-mismatch(MI : LMI, MI2) = if isInstance(MI) == false then resolve-mismatch(MI, MI2) else  merge(getAllInstances(MI,MI : LMI))  fi  .
+ceq resolve-mismatch(MI : LMI, MI2 : LMI2) = split(MI, lenght(getAllInstances(MI2 , MI2 : LMI2))) : resolve-mismatch(LMI, getRest(getAllInstances(MI2, MI2 : LMI2), MI2 : LMI2)) if lenght(getAllInstances(MI2, MI2 : LMI2)) > 1 and lenght(getAllInstances(MI, MI : LMI)) == 1 and elmFromInstance(MI2,getfirstMsg(LMI2)) and check-compatibility(MI : LMI, MI2 : LMI2) == false   .
+eq resolve-mismatch (MI, MI2 : LMI2) = if isInstance(MI2) == false then resolve-mismatch (MI,MI2) else split(MI, lenght(getAllInstances(MI2 , MI2 : LMI2))) fi .
+ceq resolve-mismatch (LMI : MI,LMI2 : MI2) = resolve-mismatch (hide(lenght(LMI : MI), LMI : MI), LMI2 : MI2 )     if (isInstance(MI) == false and isInstance(MI2) == false) /\ (lenght(LMI) - lenght(LMI2) > 1) /\ (verifyType(LMI, LMI2) == true ) /\ (check-compatibility(LMI, LMI2) == false) .
+ceq resolve-mismatch (LMI,LMI2) = resolve-mismatch (resvType(LMI, LMI2),  LMI2) if (verifyType(LMI, LMI2) == false and check-compatibility(LMI, LMI2) == false)   /\ (instancesExist(LMI) == false and instancesExist(LMI2) == false)  .
+    eq resolve-mismatch (MI,MI2) = if check-compatibility(MI, MI2) == false then resvType(MI, MI2) else MI fi .
+ceq resolve-mismatch (MI : LMI, MI2 : LMI2) = MI : resolve-mismatch (LMI,LMI2) if check-compatibility(MI, MI2) == true  .
+ceq a resolve-mismatch (LMI, LMI2) = LMI if check-compatibility(LMI, LMI2) == true .

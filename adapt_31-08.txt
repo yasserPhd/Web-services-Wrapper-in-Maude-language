@@ -1,0 +1,11 @@
+ceq adapt(MI : LMI, MI2 : LMI2) = merge(getAllInstances(MI,MI : LMI)) : adapt(getRest(getAllInstances(MI,MI : LMI),MI : LMI), LMI2) if lenght(getAllInstances(MI , MI : LMI)) > 1 and lenght(getAllInstances(MI2 , MI2 : LMI2)) == 1 and check-compatibility(MI : LMI, MI2 : LMI2) == false  .
+ eq adapt(MI : LMI, MI2) = if isInstance(MI) == false then adapt(MI, MI2) else  merge(getAllInstances(MI,MI : LMI))  fi  .
+    ceq adapt(MI : LMI, MI2 : LMI2) = split(MI, lenght(getAllInstances(MI2 , MI2 : LMI2))) : adapt(LMI, getRest(getAllInstances(MI2, MI2 : LMI2), MI2 : LMI2)) if lenght(getAllInstances(MI2, MI2 : LMI2)) > 1 and lenght(getAllInstances(MI, MI : LMI)) == 1 and elmFromInstance(MI2,getfirstMsg(LMI2)) and check-compatibility(MI : LMI, MI2 : LMI2) == false   .
+    ceq adapt(MI, MI2 : LMI2) = split(MI, lenght(getAllInstances(MI2 , MI2 : LMI2))) if isInstance(MI2) == true .
+ 
+   ceq adapt(LMI,LMI2) = adapt(resvType(LMI, LMI2),  LMI2) if (verifyType(LMI, LMI2) == false)   /\ (instancesExist(LMI) == false and instancesExist(LMI2) == false)  .
+ 
+    ceq adapt(MI,MI2) = MI if verifyType(MI, MI2) == true . 
+   
+   ceq adapt(LMI : MI,LMI2 : MI2) = adapt(hide(lenght(LMI : MI), LMI : MI), LMI2 : MI2 )     if (isInstance(MI) == false and isInstance(MI2) == false) /\ (lenght(LMI) - lenght(LMI2) > 1) /\ (verifyType(LMI, LMI2) == true ) /\ (check-compatibility(LMI, LMI2) == false) .
+ceq adapt(MI : LMI, MI2 : LMI2) = MI : adapt(LMI,LMI2) if verifyType(MI, MI2) == true  .

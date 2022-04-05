@@ -1,0 +1,249 @@
+fmod LImain is
+protecting NAT .
+protecting TRUTH-VALUE   .
+protecting LISTINTER   .
+
+
+
+ op getMs : Interface -> MessageIN .
+ op deleteadditional : listMid listMid -> listMid .
+*** op compose : X$Interface X$Interface -> X$listInter .
+*** op comp :  X$Interface X$Interface -> X$listInter .
+     op rec-comp : listInter -> listInter .
+    op compose : listInter listInter -> listInter .
+ op first : listInter -> Interface .
+ op second : listInter -> Interface .
+ op elm : Int listInter -> Interface .
+ 
+ op check-compatibility : Interface Interface -> Bool .
+ op check-compatibility :  listMid listMid -> Bool .
+
+
+  op resolve-mismatch : Interface Interface  Bool  -> Interface .
+  op resolve-mismatch2 : Interface Interface   -> Interface .
+  op adapt : listMid listMid -> listMid .
+  op instances : MessageId Int -> listMid . 
+  op crtlist : MessageId Int -> listMid . 
+  op returnInst : listMid  -> listMid .
+
+ ***  op compose : X$Interface X$Interface -> X$listInter .
+***   op compose : Int Int X$listInter -> X$listInter .
+
+
+   op merge : listMid -> MessageId .
+
+   op split : MessageId  Int -> listMid  .
+
+
+  op hide : Int listMid -> listMid .
+
+***  op resvType :  listMid -> listMid .
+  op resvType :  listMid listMid -> listMid .
+  
+  op delAdd : listMid -> listMid .
+ 
+
+var I I2 : Interface .
+var LI LI2  : listInter .
+***var LI3 : X$listInter .
+***var LM : listMessg{X} .
+***var M : X$Message .
+vars  MI  MI2 MI3 MI4 : MessageId  .
+
+  var LMI LMI2 LMI3 LMI4 : listMid .
+	   
+	var N M l i j K F H : Int .
+	var B : Bool .
+
+
+ ***eq get-first (I) = getfirst(I) .
+*** eq returnlist(MI 1 : MI 2 ) = crtlist(MI,2)  .
+*** eq returnlist( LMI : MI M ) : MI N = LMI : MI N if elmAt(lenght(LMI), LMI)) : MI N   
+*** ceq crtlist(MI,N) = crtlist(MI,N - 1) : (MI N) if N > 1 .
+*** eq crtlist(MI,1) = (MI 1) .
+*** ceq delAdd( (crtlist(MI,K)) : LMI) = LMI if K > 1 .
+*** ceq delAdd( (crtlist(MI,K)) : LMI) = MI : LMI if K = 1 .
+ ***ceq delAdd((instances(((MI i) j), K)) : LMI) = LMI if K > 1 .  
+ 
+ 
+
+  ceq deleteadditional(MI : LMI,MI2 : LMI2) = MI : deleteadditional(LMI,LMI2)  if doesexist(MI,MI2) . ***and lenght(LMI) > lenght(LMI2)   .
+  ceq deleteadditional(MI : LMI,MI2 : LMI2) = deleteadditional(LMI,MI2 : LMI2) if doesexist(MI,MI2) == false . ***and lenght(LMI) > lenght(LMI2)   . 
+  ***eq deleteadditional(MI : MI2,MI3) =  if doesexist(MI,MI2) then MI else MI2 fi  . 
+   eq deleteadditional(MI : LMI,MI3) =  if doesexist(MI,MI3) then MI else deleteadditional(LMI,MI3) fi  .
+   ceq deleteadditional(MI, MI2 : LMI) = MI if doesexist(MI,MI2) . 
+
+  ***ceq deleteadditional(MI : LMI,MI2) 
+  
+ *** ceq deleteadditional(MI : MI2,LMI) = MI if doesexist(MI2,LMI) == false and doesexist(MI,LMI) == true   .  
+ *** ceq  deleteadditional(MI : MI2,LMI) = MI2 if doesexist(MI,LMI) == false and doesexist(MI2,LMI) == true .
+ *** ceq  deleteadditional(MI : MI2,LMI) = MI : MI2 if doesexist(MI,LMI) == true and doesexist(MI2,LMI) == true .
+   ***ceq deleteadditional(LMI,LMI2) = LMI if lenght(LMI) == lenght(LMI2) . 
+ 
+**** workable code 
+***  ceq deleteadditional(MI : LMI,MI2 : LMI2) =   MI : deleteadditional(LMI,LMI2) if (MI == MI2) and (lenght(LMI) > lenght(LMI2)) and lenght(LMI) > 1 .
+***  ceq deleteadditional(MI : LMI,MI2 : MI3) =  MI if (MI == MI2) and (lenght(LMI) > 1) .
+  ***ceq deleteadditional(MI : LMI,MI2 : MI3) =  deleteadditional(LMI,MI2 : MI3) if (MI =/= MI2) and (lenght(LMI) > 1) .
+***  ceq deleteadditional(MI : LMI,MI2 : MI3) =  deleteadditional(LMI,MI2 : MI3) if (MI =/= MI2) and (lenght(LMI) > 1) .
+*** ceq deleteadditional(MI : LMI,MI2 : LMI2) = deleteadditional(LMI,MI2 : LMI2) if (MI =/= MI2) and (lenght(LMI) > lenght(LMI2)) .
+*** ceq deleteadditional(LMI,LMI2) = LMI if lenght(LMI) == lenght(LMI2) .
+ 
+ eq getMs(I) = getMsgIN(I) .
+ 
+ ***eq compose(I,I2) = comp(I,I2) .
+ eq first(LI) = elmAt(1,LI) .
+ eq second(LI) = elmAt(2,LI) .
+ eq elm(N,LI) = elmAt(N,LI) .
+ 
+ eq resolve-mismatch2(I,I2) = if check-compatibility(I,I2) == false then setLMOUT(adapt(getLMOUT(I), getLMIN(I2)), I) else I fi  .
+ 
+ ***getOId(I) == SO and getOId(I2) == TO
+ 
+  eq check-compatibility(I,I2) = if   
+
+    lenght(getLMOUT(I)) == lenght(getLMIN(I2))
+
+      and  subType(getLMOUT(I),getLMIN(I2)) == true  then true else false fi . 
+      
+      eq check-compatibility(LMI,LMI2) = if   
+
+    lenght(LMI) == lenght(LMI2)
+
+      and  verifyType(LMI,LMI2) == true  then true else false fi .
+      
+      
+      
+    
+ ***  ceq adapt(MI :: (MI2 : LMI2), MI3 : LMI2) = merge(MI :: MI2) : adapt(LMI2, MI3 : LMI2) if elmFromInstance(MI2,MI) == true and sameinstance(MI,MI3) == true  .
+ ***   ceq adapt((MI :: MI2) : LMI2, MI3 : LMI2) = merge((MI :: MI2)) if elmFromInstance(MI2,MI) == true and sameinstance(MI :: MI2,MI3) == true  .
+*** ***coor** ceq adapt((MI @ N) :: LMI, MI2 : LMI2) = merge((MI @ N) :: getfirstMsg(LMI)) : adapt(LMI, MI2 : LMI2) if elmFromInstance((MI @ N),getfirstMsg(LMI)) .
+  
+  ***   ceq adapt((MI @ N) : LMI, MI2 : LMI2) = merge((MI @ N) : getfirstMsg(LMI)) : adapt(getTail(LMI), LMI2) if elmFromInstance((MI @ N),getfirstMsg(LMI)) .
+*** this is ceq adapt(MI : LMI, MI2 : LMI2) = merge(getAllInstances(MI,MI : LMI)) : adapt(getRest(getAllInstances(MI,MI : LMI),MI : LMI), LMI2) if elmFromInstance(MI,getfirstMsg(LMI)) and lenght(getAllInstances(MI , MI : LMI)) > 1 and lenght(getAllInstances(MI2 , MI2 : LMI2)) == 1 and check-compatibility(MI : LMI, MI2 : LMI2) == false  .
+ 
+***   ceq adapt(MI : LMI, (MI @ N) : LMI2) = split(MI, lenght(getAllInstances(MI @ N, (MI @ N) : LMI2))) : adapt(LMI, getRest(getAllInstances(MI @ N, (MI @ N) : LMI2), (MI @ N) : LMI2)) if elmFromInstance((MI @ N),getfirstMsg(LMI2)) . 
+
+ ceq adapt(MI : LMI, MI2 : LMI2) = merge(getAllInstances(MI,MI : LMI)) : adapt(getRest(getAllInstances(MI,MI : LMI),MI : LMI), LMI2) if lenght(getAllInstances(MI , MI : LMI)) > 1 and lenght(getAllInstances(MI2 , MI2 : LMI2)) == 1 and check-compatibility(MI : LMI, MI2 : LMI2) == false  .
+ eq adapt(MI : LMI, MI2) = if isInstance(MI) == false then adapt(MI, MI2) else  merge(getAllInstances(MI,MI : LMI))  fi  .
+*** ceq adapt(MI : LMI, MI2 : LMI2) = split(MI, lenght(getAllInstances(MI2 , MI2 : LMI2))) : adapt(LMI, getRest(getAllInstances(MI2, MI2 : LMI2), MI2 : LMI2)) if lenght(getAllInstances(MI2, MI2 : LMI2)) > 1 and lenght(getAllInstances(MI, MI : LMI)) == 1 and check-compatibility(MI : LMI, MI2 : LMI2) == false   .
+ ceq adapt(MI : LMI, MI2 : LMI2) = split(MI, lenght(getAllInstances(MI2 , MI2 : LMI2))) : adapt(LMI, getRest(getAllInstances(MI2, MI2 : LMI2), MI2 : LMI2)) if lenght(getAllInstances(MI2, MI2 : LMI2)) > 1 and lenght(getAllInstances(MI, MI : LMI)) == 1 and check-compatibility(MI : LMI, MI2 : LMI2) == false and (lenght( MI2 : LMI2) > lenght(getAllInstances(MI2, MI2 : LMI2)) )   .
+ ceq adapt(MI : LMI, MI2 : LMI2) = split(MI, lenght(getAllInstances(MI2 , MI2 : LMI2)))  if lenght(getAllInstances(MI2, MI2 : LMI2)) > 1 and lenght(getAllInstances(MI, MI : LMI)) == 1 and check-compatibility(MI : LMI, MI2 : LMI2) == false and (lenght( MI2 : LMI2) == lenght(getAllInstances(MI2, MI2 : LMI2)) )   .
+ ceq adapt(MI, MI2 : LMI2) = split(MI, lenght(getAllInstances(MI2 , MI2 : LMI2))) if isInstance(MI2) == true .
+
+    ceq adapt(MI,MI2) = MI if verifyType(MI, MI2) == true   . 
+    ceq adapt(MI, MI2) = resvType(MI, MI2) if (verifyType(MI, MI2) == false) and (isInstance(MI) == false and isInstance(MI2) == false) and (MI2 =/= _) .
+   ceq adapt(MI : LMI, MI2 : LMI2) = MI : adapt(LMI,LMI2) if verifyType(MI, MI2) == true  .
+ ceq adapt(MI : LMI, MI2 : LMI2) = resvType(MI, MI2) : adapt(LMI,LMI2) if (verifyType(MI, MI2) == false) and (isInstance(MI) == false and isInstance(MI2) == false) .
+   
+   ceq adapt(LMI : MI,LMI2) = adapt(hide(lenght(LMI : MI), LMI : MI), LMI2 )     if (isInstance(MI) == false) and (lenght(LMI) - lenght(LMI2) == 1) and (verifyType2(LMI, LMI2) == true ) and (check-compatibility(LMI : MI, LMI2) == false) .
+  *** ceq adapt(LMI, LMI2) = nil if LMI2 == _ . 
+ 
+  *** ceq adapt(LMI, LMI2) = LMI if check-compatibility(LMI, LMI2) == true .
+ 
+ ***eq adapt(MI : LMI, MI2) =  adapt(getAllInstances(MI,MI : LMI), MI2)   .  
+ *** eq adapt(MI : LMI, MI2)
+  ***  ceq adapt(MI : LMI, MI2 : LMI2) =  MI : adapt(LMI,LMI2) if MI == SM and MI2 == TM .
+  *** ceq adapt(MI : LMI, MI2 : LMI2) = resvType(MI, MI2) : adapt(LMI,LMI2) if MI == TM and MI2 == TM .
+  *** ceq adapt(LMI,LMI2) = adapt(resvType(LMI, LMI2),  LMI2) if (verifyType(LMI, LMI2) == false)   /\ (instancesExist(LMI) == false and instancesExist(LMI2) == false)  .
+ ***    ceq adapt(MI : LMI, MI2 : LMI2) = resvType(MI, MI2) : LMI if MI == MI2 .
+ ***   ceq adapt(MI : LMI,MI2 : LMI2) = adapt(hide(1, MI : LMI), LMI2 : MI2 )     if (isInstance(MI) == false and lenght(getAllInstances(MI2 , MI2 : LMI2)) == 1) /\ (lenght(LMI) - lenght(LMI2) == 1) /\  (check-compatibility(LMI, LMI2) == false) .
+  
+   ***    ceq adapt(instances(MI,N) : LMI2, MI2 : LMI3) = merge(instances(MI,N)) : adapt(LMI2,LMI3) if MI == MI2 .
+  ***   ceq adapt(MI : LMI, MI2 : LMI2) = MI : adapt(LMI,LMI2) if MI == SM and MI2 == TM .
+ ***  ceq adapt((instances((MI(i))(j), K)) : LMI,((MI2(l))(H)) : LMI2) = merge(instances(((MI(i))(j)),K))  if MI == MI2 /\ i == l + 1 /\ j == H .
+ ***  ceq adapt(((MI(j))(K)) : LMI, MI2 : LMI2) = LMI   if MI == MI2  .
+ ***(MI(i)(j)(k))*** : *** LMI **  (MI2(L)(H)) : ***LMI2 /\ (j == H)
+ ***     ceq adapt(MI : LMI, instances(MI2,K) : LMI2) = adapt(split(MI,K) : LMI) .
+ ***     ceq adapt(LMI : MI, LMI2) = adapt(LMI) if lenght(LMI) == lenght(LMI2) .
+ ***     ceq adapt(MI : LMI, MI2 : LMI) = resvType(MI) : adapt(LMI) if MI == SM and MI2 == SM .  
+  ***  ceq adapt(LMI, LMI2) = adapt(hide(lenght(LMI), LMI), LMI2)     if verifyType(LMI,LMI2) /\ (lenght(LMI) - lenght(LMI2) == 1) /\ (instancesExist(LMI) == false and instancesExist(LMI2) == false) and check-compatibility(LMI, LMI2) == false .    
+   ***ceq adapt(MI, MI2) = MI if MI2 == _ .
+
+    ***     eq instances(MI,N) =   (MI(N)) : instances(MI,N - 1) .
+       ceq  instances(MI,N) = instances(MI,N - 1) : (MI @ N) if N > 1 .
+         eq instances(MI,1) = (MI @ 1) .
+
+	***   eq compose(I,I2) = if check-compatibility(I,I2) == true then comp(I,I2) else   comp(resolve-mismatch(I,I2,false),I2) fi . 
+
+
+  ***   eq compose(N,M,LI) = compose(elmAt(N,LI),elmAt(M,LI)) .
+		
+
+ ***  eq rec-comp(LI ++ I) =  compose(rec-comp(setlastInter(resolve-mismatch(getLastInter(LI),I,check-compatibility(getLastInter(LI),I)),LI)),I) .
+   eq rec-comp(LI ++ I) =  compose(rec-comp(setlastInter(resolve-mismatch2(getLastInter(LI),I),LI)),I) .
+  ***  eq comp(LI ++ I) =  compose(comp(LI),I) .
+    eq rec-comp(I) = I .
+ *** eq comp(LI ++ I) = resolve-mismatch(getLastInter(LI),I,false) .
+
+	 ceq merge(MI @ N) = MI if N == 1  . 
+	ceq merge( (MI @ N) : LMI) = MI if elmFromInstance((MI @ N), LMI) == true and lenght(LMI) >= 1 .
+***	ceq split(MI(i)(j),k) = split(MI(i)(j),k - 1) : (MI(i)(j)(k) ) if k > 1 . 
+ ***   eq split(MI(i)(j),1) = MI(i)(j)(1) .
+ ***   eq merge( (MI(N)(M)(L)) : LMI) = MI . 
+
+     ceq split(MI,N) = (MI @ 1) : (MI @ 2) if N == 2 .
+	***	 ceq split(MI ,N) = (MI @ N) : split(MI ,N - 1) if N > 1 .
+	ceq split(MI ,N) =  split(MI ,N - 1) : (MI @ N) if N > 2 .
+
+
+
+   ceq hide(N,MI : LMI) = LMI if N == 1 .
+     ceq hide(N, MI : MI2) = MI if N == 2 .
+	 ceq hide(N,MI : LMI) = MI : hide(N - 1,LMI) if N > 2 .
+	*** eq hide(1, MI) = nil  .
+
+
+
+***eq  resvType(MI : nil) = SM : nil   .
+
+***ceq resvType(MI : LMI) = SM : resvType(LMI) if MI == TM .
+
+***eq resvType(MI : LMI) = MI : resvType(LMI) [owise] . 
+
+***eq resvType(MI,MI2) = if MI == SM and MI2 == TM then MI else SM fi .
+ceq resvType(MI,MI2) = MI if MI == SM and MI2 == TM .
+ceq resvType(MI,MI2) = SM if MI =/= SM and MI2 == TM .
+ceq resvType(MI : LMI, MI2 : LMI2) = MI : resvType(LMI,LMI2) if (MI == SM) and (MI2 == TM) . ***and (lenght(LMI) == lenght(LMI2)).
+ceq resvType(MI : LMI, MI2 : LMI2) =   SM : resvType(LMI,LMI2) if MI =/= SM and MI2 == TM . ***and (lenght(LMI) == lenght(LMI2)) . 
+***ceq resvType(MI : LMI, MI2) = SM : LMI if MI == TM and MI2 == TM . 
+eq resvType(MI : LMI, MI2) = if verifyType(MI, MI2) then MI : LMI else SM : LMI fi .
+
+
+
+
+		                     *** resolve mismatch 
+
+
+
+ ceq resolve-mismatch(I,I2,B) = resolve-mismatch(setLMOUT(merge(getLMOUT(I)) : nil,I),I2,check-compatibility(setLMOUT(merge(getLMOUT(I)) : nil,I),I2))  
+
+
+   if  lenght(getLMOUT(I)) >= 2 /\ lenght(getLMIN(I2)) == 1 /\ B == false .
+
+
+    ceq resolve-mismatch(I,I2,B) = resolve-mismatch(setLMOUT(split(elmAt(1,getLMOUT(I))  ,lenght(getLMIN(I2))) ,I),I2
+
+
+,check-compatibility(setLMOUT(split(elmAt(1,getLMOUT(I))  , lenght(getLMIN(I2))) ,I),I2)) 
+
+ if  lenght(getLMOUT(I)) < lenght(getLMIN(I2))  and B == false .
+
+***if  lenght(getLMOUT(I)) == 1 /\ lenght(getLMIN(I2)) >= 2 and B == false .
+
+
+ ceq resolve-mismatch(I,I2,B) = resolve-mismatch(setLMOUT(hide(lenght(getLMOUT(I)),getLMOUT(I)),I),I2,check-compatibility(setLMOUT(hide(lenght(getLMOUT(I)),getLMOUT(I)),I),I2)) 
+
+ if  sus(getLMOUT(I),getLMIN(I2)) >= 1   /\ B == false .
+
+*** ceq resolve-mismatch(I,I2,B) = resolve-mismatch(setLMOUT(resvType(getLMOUT(I)),I),I2,check-compatibility(setLMOUT(resvType(getLMOUT(I)),I),I2)) 
+
+
+
+*** if  subType(getLMOUT(I),getLMIN(I2)) == false  and B == false . 
+
+
+
+     ceq resolve-mismatch(I,I2,B) = I if B == true .
+ 
+  
+endfm
